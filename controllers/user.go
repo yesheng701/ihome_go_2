@@ -257,6 +257,8 @@ func (this *UserController) UpdateUserName() {
 	return
 }
 
+// /api/v1.0/user [get]
+// 获取用户信息
 func (this *UserController) GetUserInfo() {
 	resp := Resp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
 	defer this.RetData(&resp)
