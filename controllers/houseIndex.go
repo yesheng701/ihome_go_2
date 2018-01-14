@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"ihome_go_2/models"
+	"ihome_idlefish/models"
 )
 
 type HousesIndexController struct {

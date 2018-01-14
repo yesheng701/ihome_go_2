@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"ihome_go_2/models"
+	"ihome_idlefish/models"
 	"path"
 )
 
@@ -58,7 +58,7 @@ func (this *UserController) Reg() {
 	beego.Info("reg succ!!! user id = ", id)
 
 	//4 将用的存储到session中
-	this.SetSession("name", user.Mobile)
+	this.SetSession("name", user.Name)
 	this.SetSession("user_id", id)
 	this.SetSession("mobile", user.Mobile)
 
@@ -110,7 +110,7 @@ func (this *UserController) Login() {
 	beego.Info("login succ!!! user id = ", user.Id)
 
 	//4 将用的存储到session中
-	this.SetSession("name", user.Mobile)
+	this.SetSession("name", user.Name)
 	this.SetSession("user_id", user.Id)
 	this.SetSession("mobile", user.Mobile)
 
@@ -201,7 +201,7 @@ func (this *UserController) UploadAvatar() {
 	}
 
 	//将fileid 拼接一个完整的url路径 + ip + port 返回给前端
-	avatar_url := "http://192.168.86.250:9091/" + fileId
+	avatar_url := "http://172.17.93.117/" + fileId
 
 	url_map := make(map[string]interface{})
 	url_map["avatar_url"] = avatar_url

@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"ihome_go_2/controllers"
+	"ihome_idlefish/controllers"
 )
 
 func init() {

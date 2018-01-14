@@ -4,5 +4,5 @@ package controllers
 type Resp struct {
 	Errno  string      `json:"errno"`
 	Errmsg string      `json:"errmsg"`
-	Data   interface{} `json:"data"`
+	Data   interface{} `json:"data",omitempty`
 }

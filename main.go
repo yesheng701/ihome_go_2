@@ -1,12 +1,10 @@
 package main
 
 import (
-	//"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	//"ihome_go_2/models"
-	_ "ihome_go_2/models"
-	_ "ihome_go_2/routers"
+	_ "ihome_idlefish/models"
+	_ "ihome_idlefish/routers"
 	"net/http"
 	"strings"
 )
@@ -41,5 +39,5 @@ func main() {
 
 	ignoreStaticPath()
 
-	beego.Run("192.168.86.250:9091")
+	beego.Run()
 }
