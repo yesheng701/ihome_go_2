@@ -201,11 +201,58 @@ func (this *UserController) UploadAvatar() {
 	}
 
 	//将fileid 拼接一个完整的url路径 + ip + port 返回给前端
-	avatar_url := "http://192.168.86.30:9091/" + fileId
+	avatar_url := "http://192.168.86.250:9091/" + fileId
 
 	url_map := make(map[string]interface{})
 	url_map["avatar_url"] = avatar_url
 	resp.Data = url_map
 
+	return
+}
+
+func (this *UserController) UpdateUserName() {
+	resp := Resp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
+	defer this.RetData(&resp)
+
+	//通过session得到当前用的user_id
+	user_id := this.GetSession("user_id")
+
+	/*
+		type Name struct {
+			Name string `json:"name"`
+		}
+		var req_name Name
+	*/
+	req_name := make(map[string]interface{})
+	json.Unmarshal(this.Ctx.Input.RequestBody, &req_name)
+
+	name, ok := req_name["name"].(string)
+	if ok == false {
+		resp.Errno = models.RECODE_PARAMERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	if name == "" {
+		resp.Errno = models.RECODE_REQERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	//更新user数据库中的name字段
+	o := orm.NewOrm()
+	user := models.User{Id: user_id.(int), Name: name}
+
+	if _, err := o.Update(&user, "name"); err != nil {
+		resp.Errno = models.RECODE_DBERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	//更新session的name  和 user_id字段
+	this.SetSession("user_id", user_id)
+	this.SetSession("name", name)
+
+	resp.Data = req_name
 	return
 }

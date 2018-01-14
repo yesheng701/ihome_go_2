@@ -41,5 +41,5 @@ func main() {
 
 	ignoreStaticPath()
 
-	beego.Run()
+	beego.Run("192.168.86.250:9091")
 }

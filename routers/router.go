@@ -18,4 +18,7 @@ func init() {
 	beego.Router("/api/v1.0/users", &controllers.UserController{}, "post:Reg")
 	//上传文件的请求
 	beego.Router("/api/v1.0/user/avatar", &controllers.UserController{}, "post:UploadAvatar")
+
+	//更新用户名的操作
+	beego.Router("/api/v1.0/user/name", &controllers.UserController{}, "put:UpdateUserName")
 }
