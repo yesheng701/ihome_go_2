@@ -277,3 +277,41 @@ func (this *UserController) GetUserInfo() {
 	resp.Data = user
 	return
 }
+
+func (this *UserController) UploadUserAuth() {
+	resp := Resp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
+	defer this.RetData(&resp)
+
+	//通过session得到当前用的user_id
+	user_id := this.GetSession("user_id")
+
+	req_info := make(map[string]interface{})
+	json.Unmarshal(this.Ctx.Input.RequestBody, &req_info)
+
+	realname, ok_name := req_info["real_name"].(string)
+	idcard, ok_id := req_info["id_card"].(string)
+
+	if ok_name == false || ok_id == false {
+		resp.Errno = models.RECODE_PARAMERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+	if realname == "" || idcard == "" {
+		resp.Errno = models.RECODE_REQERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	//更新user数据库中的real_name和id_card字段
+	o := orm.NewOrm()
+	user := models.User{Id: user_id.(int), Real_name: realname, Id_card: idcard}
+
+	if _, err := o.Update(&user, "real_name", "id_card"); err != nil {
+		resp.Errno = models.RECODE_DBERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	resp.Data = req_info
+	return
+}

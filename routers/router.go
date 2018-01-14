@@ -22,6 +22,8 @@ func init() {
 	beego.Router("/api/v1.0/user/avatar", &controllers.UserController{}, "post:UploadAvatar")
 	//更新用户名的操作
 	beego.Router("/api/v1.0/user/name", &controllers.UserController{}, "put:UpdateUserName")
+	//实名认证检查
+	beego.Router("/api/v1.0/user/auth", &controllers.UserController{}, "get:GetUserInfo;post:UploadUserAuth")
 
 	/*
 	* 房屋相关业务
