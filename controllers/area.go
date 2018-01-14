@@ -32,7 +32,7 @@ func (this *AreaController) GetAreas() {
 
 	//1 应该从缓存中取得地域信息数据 直接返回给前端
 	//(1) 创建redis链接
-	cache_conn, err := cache.NewCache("redis", `{"key":"ihome_idlefish","conn":"172.17.93.117:6379","dbNum":"0"}`)
+	cache_conn, err := cache.NewCache("redis", `{"key":"ihome_idlefish","conn":"127.0.0.1:6379","dbNum":"0"}`)
 	if err != nil {
 		beego.Info("cache redis conn error , err =", err)
 		resp["errno"] = models.RECODE_DBERR

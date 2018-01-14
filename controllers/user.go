@@ -256,3 +256,22 @@ func (this *UserController) UpdateUserName() {
 	resp.Data = req_name
 	return
 }
+
+func (this *UserController) GetUserInfo() {
+	resp := Resp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
+	defer this.RetData(&resp)
+
+	user_id := this.GetSession("user_id")
+	user := models.User{Id: user_id.(int)}
+
+	o := orm.NewOrm()
+	if err := o.QueryTable("user").Filter("id", user.Id).One(&user); err != nil {
+		// 没有满足数据
+		resp.Errno = models.RECODE_NODATA
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	resp.Data = user
+	return
+}
