@@ -202,7 +202,6 @@ func (this *UserController) UploadAvatar() {
 
 	//将fileid 拼接一个完整的url路径 + ip + port 返回给前端
 	avatar_url := "http://172.17.93.117/" + fileId
-
 	url_map := make(map[string]interface{})
 	url_map["avatar_url"] = avatar_url
 	resp.Data = url_map
@@ -312,6 +311,5 @@ func (this *UserController) UploadUserAuth() {
 		return
 	}
 
-	resp.Data = req_info
 	return
 }

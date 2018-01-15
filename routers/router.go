@@ -31,7 +31,7 @@ func init() {
 	// 发布房源信息
 	beego.Router("/api/v1.0/houses", &controllers.HouseController{}, "post:PostHousesInfo")
 	// 上传房源图片信息
-	beego.Router("/api/v1.0/:id([0-9]+)/images", &controllers.HouseController{}, "post:UploadImages")
+	beego.Router("/api/v1.0/houses/:id([0-9]+)/images", &controllers.HouseController{}, "post:UploadImages")
 	// 请求当前用户已发布房源信息
 	beego.Router("/api/v1.0/user/houses", &controllers.HouseController{}, "get:GetUserHousesInfo")
 	// 请求房源详细信息
