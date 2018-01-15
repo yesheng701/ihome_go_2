@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
@@ -93,6 +94,67 @@ type OrderHouse struct {
 	Status      string    `orm:"default(WAIT_ACCEPT)"` //订单状态
 	Comment     string    `orm:"size(512)"`            //订单评论
 	Ctime       time.Time `orm:"auto_now_add;type(datetime)" json:"ctime"`
+}
+
+func (this *House) To_one_house_desc() interface{} {
+	house_desc := map[string]interface{}{
+		"hid":         this.Id,
+		"user_id":     this.User.Id,
+		"user_name":   this.User.Name,
+		"user_avatar": "http://39.106.152.53/" + this.User.Avatar_url,
+		"title":       this.Title,
+		"price":       this.Price,
+		"address":     this.Address,
+		"room_count":  this.Room_count,
+		"acreage":     this.Acreage,
+		"unit":        this.Unit,
+		"capacity":    this.Capacity,
+		"beds":        this.Beds,
+		"deposit":     this.Deposit,
+		"min_days":    this.Min_days,
+		"max_days":    this.Max_days,
+	}
+
+	// 房屋图片
+	img_urls := []string{}
+	for _, img_url := range this.Images {
+		img_urls = append(img_urls, "http://39.106.152.53/"+img_url.Url)
+	}
+	house_desc["img_urls"] = img_urls
+
+	// 房屋设施
+	facilities := []int{}
+	for _, facility := range this.Facilities {
+		facilities = append(facilities, facility.Id)
+	}
+	house_desc["facilities"] = facilities
+
+	// 评论信息
+	comments := []interface{}{}
+	orders := []OrderHouse{}
+	o := orm.NewOrm()
+	order_num, err := o.QueryTable("order_house").Filter("house_id", this.Id).Filter("status", ORDER_STATUS_COMPLETE).OrderBy("-ctime").Limit(10).All(&orders)
+	if err != nil {
+		beego.Error("select orders comments error, err =", err, "house id =", this.Id)
+	}
+	for i := 0; i < int(order_num); i++ {
+		o.LoadRelated(&orders[i], "User")
+		var username string
+		if orders[i].User.Name == "" {
+			username = "匿名用户"
+		} else {
+			username = orders[i].User.Name
+		}
+
+		comment := map[string]string{
+			"comment":   orders[i].Comment,
+			"user_name": username,
+			"ctime":     orders[i].Ctime.Format("2006-01-02 15:04:05"),
+		}
+		comments = append(comments, comment)
+	}
+	house_desc["comments"] = comments
+	return house_desc
 }
 
 func init() {

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
@@ -260,7 +261,7 @@ func (this *HouseController) FindHousesById() {
 	// 2. 从url中得到房屋id
 	house_id := this.Ctx.Input.Param(":id")
 	// 3. 从缓存中取出当前房屋数据 有则直接返回
-	cache_conn, err := cache.NewCache("redis", `{"key":"ihome_idlefish, "conn":"127.0.0.1:6379", "dbNum":"0"}`)
+	cache_conn, err := cache.NewCache("redis", `{"key":"ihome_idlefish", "conn":"127.0.0.1:6379", "dbNum":"0"}`)
 	if err != nil {
 		resp.Errno = models.RECODE_DBERR
 		resp.Errmsg = models.RecodeText(resp.Errno)
@@ -290,10 +291,18 @@ func (this *HouseController) FindHousesById() {
 	o.LoadRelated(&house, "User")
 	o.LoadRelated(&house, "Images")
 	o.LoadRelated(&house, "Facilities")
-
 	// 5. 关联查询Area, User, Images, Facilities
+
 	// 6. 将房屋详细信息的json格式存入缓存
+	house_info_value, _ = json.Marshal(house.To_one_house_desc())
+	cache_conn.Put(house_info_key, house_info_value, 3600*time.Second)
 	// 7. 返回正确json
+	resData := make(map[string]interface{})
+	resData["user_id"] = user_id
+	resData["house"] = house.To_one_house_desc()
+
+	resp.Data = resData
+	return
 }
 
 // /api/v1.0/houses [get]
